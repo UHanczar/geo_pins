@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Redirect } from "react-router-dom";
+
+import Context from '../context';
 import Login from '../components/Auth/Login';
 
 const Splash = () => {
+  const { state } = useContext(Context);
+
   return (
-    <Login />
+    state.isLoggedIn ? <Redirect to='/' /> : <Login />
   );
 };
 
