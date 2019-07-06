@@ -10,10 +10,6 @@ const Signout = ({ classes }) => {
 
   const { dispatch } = useContext(Context);
 
-  const onLogoutButtonClick = () => {
-
-  };
-
   const onLogout = () => {
     dispatch({ type: 'LOGOUT_USER'});
   };

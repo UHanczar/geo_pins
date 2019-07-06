@@ -12,6 +12,6 @@ const pinSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now() },
     author: { type: mongoose.Schema.ObjectId, ref: 'User' },
   }]
-}, { timestamp: true });
+}, { timestamps: true });
 
 module.exports = mongoose.model('Pin', pinSchema);
