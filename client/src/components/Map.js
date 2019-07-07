@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Subscription} from "react-apollo";
 import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
-import { withStyles } from "@material-ui/core/styles";
 import differenceInMinutes from 'date-fns/difference_in_minutes';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
@@ -32,6 +33,7 @@ const Map = ({ classes }) => {
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [userPosition, setUserPosition] = useState(null);
   const [popup, setPopup] = useState(null);
+  const mobileSize = useMediaQuery('(max-width: 650px)');
 
 
   useEffect( () => {
@@ -41,6 +43,14 @@ const Map = ({ classes }) => {
   useEffect(() => {
     getUserPosition();
   }, []);
+
+  useEffect(() => {
+    const pinExists = popup && Boolean(state.pins.find(pin => pin._id === popup._id));
+
+    if (!pinExists) {
+      setPopup(null);
+    }
+  }, [state.pins.length]);
 
   const getUserPosition = () => {
     if ('geolocation' in navigator) {
@@ -93,13 +103,14 @@ const Map = ({ classes }) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={mobileSize ? classes.rootMobile : classes.root}>
       <ReactMapGL
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
         width='100vw'
         height='calc(100vh - 64px)'
         mapStyle='mapbox://styles/mapbox/streets-v9'
         {...viewport}
+        scrollZoom={!mobileSize}
         onViewportChange={newViewport => setViewport(newViewport)}
         onClick={handleMapClick}
       >
