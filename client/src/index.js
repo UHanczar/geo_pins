@@ -16,7 +16,7 @@ import Context from './context';
 import reducer from './reducer';
 
 const websocketLink = new WebSocketLink({
-  uri: process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_WS_URL : process.env.REACT_APP_DEV_WS_URL,
+  uri: process.env.REACT_APP_NODE_ENV === 'production' ? process.env.REACT_APP_PROD_WS_URL : process.env.REACT_APP_DEV_WS_URL,
   options: {
     reconnect: true,
   },
@@ -28,6 +28,7 @@ const client = new ApolloClient({
 });
 
 console.log('PROCESS', process.env);
+
 
 const Root = () => {
   const initialState = useContext(Context);
