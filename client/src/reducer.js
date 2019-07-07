@@ -56,7 +56,7 @@ const reducer = (state, { type, payload }) => {
     case 'DELETE_PIN':
       return {
         ...state,
-        currentPin: state.currentPin._id === payload._id ? null : state.currentPin,
+        currentPin: state.currentPin && state.currentPin._id === payload._id ? null : state.currentPin,
         pins: state.pins.filter(pin => pin._id !== payload._id),
       };
     case 'CREATE_COMMENT':
