@@ -29,17 +29,17 @@ module.exports = {
         ...args.input,
         author: ctx.currentUser._id,
       }).save();
-      const addedPin = await PinModel.populate(pin, 'author');
-      pubSub.publish(PIN_ADDED, { addedPin });
+      const pinAdded = await PinModel.populate(pin, 'author');
+      await pubSub.publish(PIN_ADDED, { pinAdded });
 
-      return addedPin;
+      return pinAdded;
     }),
 
     deletePin: authenticated(async (root, args, ctx, info) => {
-      const deletedPin = await PinModel.findOneAndDelete({ _id: args.pinId}).exec();
-      pubSub.publish(PIN_DELETED, { deletedPin });
+      const pinDeleted = await PinModel.findOneAndDelete({ _id: args.pinId}).exec();
+      await pubSub.publish(PIN_DELETED, { pinDeleted });
 
-      return deletedPin;
+      return pinDeleted;
     }),
 
     createComment: authenticated(async (root, args, ctx, info) => {
@@ -48,7 +48,7 @@ module.exports = {
         author: ctx.currentUser._id,
       };
 
-      const updatedPin = await PinModel
+      const pinUpdated = await PinModel
         .findOneAndUpdate(
         { _id: args.pinId},
         { $push: { comments: newCommnet }},
@@ -56,9 +56,9 @@ module.exports = {
         )
         .populate('author')
         .populate('comments.author');
-      pubSub.publish(PIN_UPDATED, { updatedPin });
+      await pubSub.publish(PIN_UPDATED, { pinUpdated });
 
-      return updatedPin;
+      return pinUpdated;
     }),
   },
   Subscription: {
