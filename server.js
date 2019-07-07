@@ -35,5 +35,5 @@ const server = new ApolloServer({
   cors: true,
 });
 
-server.listen().then(params => console.log(`Server listens on url: ${params.url}`));
+server.listen({ port: process.env.PORT || 4000 }).then(params => console.log(`Server listens on url: ${params.url}`));
 
