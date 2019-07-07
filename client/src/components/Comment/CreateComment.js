@@ -1,13 +1,58 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { withStyles } from "@material-ui/core";
-// import InputBase from "@material-ui/core/InputBase";
-// import IconButton from "@material-ui/core/IconButton";
-// import ClearIcon from "@material-ui/icons/Clear";
-// import SendIcon from "@material-ui/icons/Send";
-// import Divider from "@material-ui/core/Divider";
+import InputBase from "@material-ui/core/InputBase";
+import IconButton from "@material-ui/core/IconButton";
+import ClearIcon from "@material-ui/icons/Clear";
+import SendIcon from "@material-ui/icons/Send";
+import Divider from "@material-ui/core/Divider";
+
+import { CREATE_COMMENT_MUTATION } from "../../graphql/mutations";
+import Context from '../../context';
+import { useClient } from '../../client';
 
 const CreateComment = ({ classes }) => {
-  return <div>CreateComment</div>;
+  const client = useClient();
+  const { state, dispatch } = useContext(Context);
+  const [comment, setComment] = useState('');
+
+  const handleSubmitComment = async () => {
+    const { createComment } = await client.request(CREATE_COMMENT_MUTATION, { pinId: state.currentPin._id, text: comment});
+
+    dispatch({ type: 'CREATE_COMMENT', payload: createComment });
+    setComment('');
+  };
+
+  return (
+    <>
+      <form className={classes.form}>
+        <IconButton
+          disabled={!comment.trim()}
+          className={classes.clearButton}
+          onClick={() => setComment('')}
+        >
+          <ClearIcon />
+        </IconButton>
+
+        <InputBase
+          className={classes.input}
+          multiline={true}
+          placeholder='Add comment'
+          value={comment}
+          onChange={event => setComment(event.target.value)}
+        />
+
+        <IconButton
+          disabled={!comment.trim()}
+          className={classes.sendButton}
+          onClick={handleSubmitComment}
+        >
+          <SendIcon />
+        </IconButton>
+      </form>
+
+      <Divider />
+    </>
+  );
 };
 
 const styles = theme => ({

@@ -28,5 +28,29 @@ module.exports = {
 
       return addedPin;
     }),
-  }
+
+    deletePin: authenticated(async (root, args, ctx, info) => {
+      const deletedPin = await PinModel.findOneAndDelete({ _id: args.pinId}).exec();
+
+      return deletedPin;
+    }),
+
+    createComment: authenticated(async (root, args, ctx, info) => {
+      const newCommnet = {
+        text: args.text,
+        author: ctx.currentUser._id,
+      };
+
+      const updatedPin = await PinModel
+        .findOneAndUpdate(
+        { _id: args.pinId},
+        { $push: { comments: newCommnet }},
+        { new: true }
+        )
+        .populate('author')
+        .populate('comments.author');
+
+      return updatedPin;
+    }),
+  },
 };
