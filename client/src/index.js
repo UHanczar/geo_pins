@@ -27,6 +27,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+console.log('PROCESS', process.env);
+
 const Root = () => {
   const initialState = useContext(Context);
   const [state, dispatch] = useReducer(reducer, initialState);
